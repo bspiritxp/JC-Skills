@@ -27,6 +27,7 @@ primary_output: simple-markdown-table
 主要读取两个本地数据源：
 
 1. `~/.codex/state_*.sqlite`
+   
    - 表：`threads`
    - 用途：获取线程 ID、任务目的、项目路径、模型、rollout 文件路径、创建/更新时间、总 Token 计数。
    - 应在 `~/.codex/` 下发现 `state_*.sqlite`，再按 schema 判断哪个是状态库。
@@ -44,11 +45,13 @@ primary_output: simple-markdown-table
      - `reasoning_effort`
      - `agent_role`
      - `thread_source`
-
+   
    兼容来源：
+   
    - 旧的 `~/.codex/session_index.jsonl` 里 session 名称字段通常叫 `thread_name`，只在状态库缺失或需要交叉校验时使用。
 
 2. `~/.codex/sessions/**/*.jsonl` 和 `~/.codex/archived_sessions/*.jsonl`
+   
    - 路径通常来自 `threads.rollout_path`，不要只扫描 `sessions/`，因为较早或归档会话可能在 `archived_sessions/`。
    - 用途：读取 `token_count` 事件，按事件时间做增量统计。
    - 关键事件：
@@ -103,7 +106,7 @@ _注意windows下使用符合windows powershell的脚本命令查询_
 4. 对同一文件内相邻 `token_count` 做差，得到本次事件增量。
 5. 只累加事件时间落入统计工作日范围内的增量。
 6. 按“任务目的”聚合总量。
-7. 同时保留项目路径、模型、会话 ID 等明细，便于解释异常大头；只有存在明确会话级字段时才保留 Faster x2 状态。
+7. 同时保留项目路径、模型、会话 ID 等明细，便于解释异常大头
 
 任务目的生成规则：
 
@@ -132,7 +135,7 @@ Codex 本地记录能直接拆出的字段：
 - `输出/写代码`：`output_tokens - reasoning_output_tokens`
 - `思考`：`reasoning_output_tokens`
 
-注意：本地记录不能可靠区分“搜索”“读文件”“写代码”“工具调用”这些语义动作。不要把它们说成精确分类。可以说明 `新输入/检索上下文` 近似包含用户输入、工具回传、文件读取、搜索结果等进入上下文的新内容；`输出/写代码` 包含最终回答、代码、工具调用文本等非思考输出。
+
 
 ## 统计维度
 
@@ -161,7 +164,7 @@ Codex 本地记录能直接拆出的字段：
 - 子 agent 类型：`agent_role`
 - 线程来源：`thread_source`
 
-## 模型与 Faster x2
+## 模型
 
 模型字段：
 
@@ -171,17 +174,7 @@ Codex 本地记录能直接拆出的字段：
 - 推理强度优先使用 `threads.reasoning_effort`；如果直接读 JSONL，可用 `turn_context.payload.effort`。
 - 同一个任务目的下如果出现多个模型，表格中用逗号列出，或显示为 `mixed: model-a / model-b`。
 
-Faster x2 字段：
 
-- 先检查状态库 `threads` schema 是否存在明确字段，例如 `faster_x2`、`faster`, `speed_mode`、`performance_mode`、`model_speed` 等。
-- 再检查 rollout JSONL 的 `turn_context.payload`、`session_meta.payload`、`event_msg.payload`、`token_count.info` 中是否存在类似字段。
-- 如果没有明确的 per-session 字段，不要推断，也不要输出 `Faster x2` 列。
-- 如果存在明确字段，则输出 `Faster x2` 列。
-- 如果明确字段的值表示启用，例如 `true`、`fast`、`x2`，输出 `是`。
-- 如果明确字段的值为空、`false`、`default`、`standard`、`normal`，输出 `否`。
-- 如果明确字段存在但字段值是无法解释的枚举，输出原值，并在结果说明中解释该字段来源。
-- 不要把 `reasoning_effort`、`model`、`cached_input_tokens`、耗时表现，或全局 UI 偏好当成 Faster x2 的可靠代理。
-- `~/.codex/.codex-global-state.json` 中可能存在 `default-service-tier = fast`、`fast-mode-personalized-estimate.*`、`has-seen-fast-mode-*` 等全局状态；这些不是会话级历史字段，不能用于给单个 session 归因。
 
 ## 输出格式
 
@@ -197,8 +190,8 @@ Faster x2 字段：
 
 表格字段固定为：
 
-| 任务目的 | 模型 | Token 总量 | 占比 |
-| --- | --- | ---: | ---: |
+| 任务目的 | 模型  | Token 总量 | 占比  |
+| ---- | --- | --------:| ---:|
 
 示例：
 
@@ -218,13 +211,13 @@ Faster x2 字段：
 
 明细表格使用当前完整字段：
 
-| 任务目的 | 项目 | 模型 | Token 总量 | 占比 | 新输入/检索上下文 | 缓存输入 | 输出/写代码 | 思考 |
-| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 任务目的 | 项目  | 模型  | Token 总量 | 占比  | 新输入/检索上下文 | 缓存输入 | 输出/写代码 | 思考  |
+| ---- | --- | --- | --------:| ---:| ---------:| ----:| ------:| ---:|
 
 如果存在明确会话级 Faster x2 字段，才在 `模型` 后增加 `Faster x2` 列：
 
-| 任务目的 | 项目 | 模型 | Faster x2 | Token 总量 | 占比 | 新输入/检索上下文 | 缓存输入 | 输出/写代码 | 思考 |
-| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 任务目的 | 项目  | 模型  | Faster x2 | Token 总量 | 占比  | 新输入/检索上下文 | 缓存输入 | 输出/写代码 | 思考  |
+| ---- | --- | --- | --------- | --------:| ---:| ---------:| ----:| ------:| ---:|
 
 每个分类字段建议显示为：
 
@@ -247,7 +240,7 @@ Faster x2 字段：
 - 数据来自本机 `~/.codex/state_*.sqlite` 中符合 schema 的状态库，以及 rollout JSONL。
 - 分类中的 `缓存输入`、`输出`、`思考` 是 Codex 记录的结构化 Token 字段。
 - “搜索、写代码、读文件”等语义类型没有独立精确字段，只能通过 Token 字段近似解释。
-- `Faster x2` 只有在本地记录中存在明确的 per-session 字段时才输出该列；如果没有明确字段，说明当前记录不支持可靠归因即可，不要输出 `unknown` 列。
+- 
 - 如果存在缺失 rollout 文件或缺失 `token_count` 事件的线程，需要列出受影响线程数量和路径。
 
 ## 推荐校验
