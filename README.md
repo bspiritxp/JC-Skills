@@ -10,6 +10,16 @@ skills/<skill-name>/SKILL.md
 
 纯内容仓库，无构建系统、无测试、无 CI。
 
+## 安装
+
+```bash
+# codex-token-summary — 统计本机 Codex Token 消耗
+npx skills add codex-token-summary --from https://github.com/bspiritxp/JC-Skills
+
+# project-sess-summary — 项目会话记忆管理（依赖 jcemb CLI）
+npx skills add project-sess-summary --from https://github.com/bspiritxp/JC-Skills
+```
+
 ## 已有技能
 
 | 技能 | 用途 |
