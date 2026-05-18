@@ -14,10 +14,10 @@ skills/<skill-name>/SKILL.md
 
 ```bash
 # codex-token-summary — 统计本机 Codex Token 消耗
-npx skills add codex-token-summary --from https://github.com/bspiritxp/JC-Skills
+npx skills add bspiritxp/JC-Skills --skill codex-token-summary
 
 # project-sess-summary — 项目会话记忆管理（依赖 jcemb CLI）
-npx skills add project-sess-summary --from https://github.com/bspiritxp/JC-Skills
+npx skills add bspiritxp/JC-Skills --skill project-sess-summary
 ```
 
 ## 已有技能
