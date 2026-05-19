@@ -41,6 +41,17 @@ python codex_token_summary.py --days 14 --output json
 python codex_token_summary.py --days 30 --no-exclude-weekends
 ```
 
+### Windows 环境初始化
+
+若 Windows 上未安装 Python，使用同目录的 `setup_python_env.ps1` 一键安装并配置：
+
+```powershell
+# 以管理员身份运行 PowerShell，然后执行
+.\setup_python_env.ps1
+```
+
+该脚本会自动检测 Python、从 python.org 下载官方安装包、加入 PATH，并安装脚本所需的依赖（仅 Python < 3.9 时需 `backports.zoneinfo`）。
+
 ### 脚本参数速查
 
 | 参数 | 说明 | 示例 |

@@ -4,6 +4,8 @@
 
 ## 快速开始
 
+### macOS / Linux
+
 ```bash
 # 最近 7 天简单表格（默认）
 python codex_token_summary.py
@@ -23,6 +25,24 @@ python codex_token_summary.py --days 14 --output json
 # 包含周末
 python codex_token_summary.py --days 30 --no-exclude-weekends
 ```
+
+### Windows
+
+若系统未安装 Python，先运行同目录的 PowerShell 初始化脚本：
+
+```powershell
+# 以管理员身份打开 PowerShell，进入脚本所在目录后执行
+.\setup_python_env.ps1
+```
+
+脚本会自动：
+1. 检测现有 Python 版本
+2. 未安装时从 python.org 下载官方安装包并静默安装
+3. 将 Python 加入用户 PATH
+4. 安装 `backports.zoneinfo`（仅 Python < 3.9 时需要）
+5. 验证 `codex_token_summary.py` 可正常运行
+
+安装完成后即可使用上面的 `python codex_token_summary.py ...` 命令。
 
 ## 参数说明
 
