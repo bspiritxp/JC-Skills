@@ -11,10 +11,49 @@ tags:
   - reporting
 default_timezone: Asia/Shanghai
 default_window: 最近 7 个自然日，排除周末休息日
-primary_output: simple-markdown-table
 ---
 
 # Codex Token 消耗统计
+
+## 快速使用（推荐使用 Python 脚本）
+
+本技能提供参数化的 Python 脚本，无需手工编写 SQL/JSON 解析代码。脚本位于本目录 `codex_token_summary.py`，支持灵活的时间范围、输出格式控制。
+
+### 常用命令
+
+```bash
+# 最近 7 天简单表格（默认）
+python codex_token_summary.py
+
+# 最近 30 天
+python codex_token_summary.py --days 30
+
+# 自定义日期范围
+python codex_token_summary.py --start-date 2026-04-01 --end-date 2026-05-18
+
+# 详细格式（含 Token 分类）
+python codex_token_summary.py --days 7 --format detailed
+
+# 输出为 JSON
+python codex_token_summary.py --days 14 --output json
+
+# 包含周末
+python codex_token_summary.py --days 30 --no-exclude-weekends
+```
+
+### 脚本参数速查
+
+| 参数 | 说明 | 示例 |
+|------|------|------|
+| `--days N` | 最近 N 天（默认 7） | `--days 30` |
+| `--start-date YYYY-MM-DD` | 自定义开始日期 | `--start-date 2026-04-01` |
+| `--end-date YYYY-MM-DD` | 自定义结束日期 | `--end-date 2026-05-18` |
+| `--format simple\|detailed` | 输出详细程度（默认 simple） | `--format detailed` |
+| `--output json\|table` | 输出类型（默认 table） | `--output json` |
+| `--no-exclude-weekends` | 包含周末 | `--no-exclude-weekends` |
+| `--tz TIMEZONE` | 时区（默认 Asia/Shanghai） | `--tz America/New_York` |
+
+详见本目录 `README_SCRIPT.md`。
 
 ## 适用场景
 
@@ -214,10 +253,6 @@ Codex 本地记录能直接拆出的字段：
 | 任务目的 | 项目  | 模型  | Token 总量 | 占比  | 新输入/检索上下文 | 缓存输入 | 输出/写代码 | 思考  |
 | ---- | --- | --- | --------:| ---:| ---------:| ----:| ------:| ---:|
 
-如果存在明确会话级 Faster x2 字段，才在 `模型` 后增加 `Faster x2` 列：
-
-| 任务目的 | 项目  | 模型  | Faster x2 | Token 总量 | 占比  | 新输入/检索上下文 | 缓存输入 | 输出/写代码 | 思考  |
-| ---- | --- | --- | --------- | --------:| ---:| ---------:| ----:| ------:| ---:|
 
 每个分类字段建议显示为：
 
